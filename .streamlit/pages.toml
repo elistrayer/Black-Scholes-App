@@ -1,0 +1,9 @@
+[[pages]]
+path = "Model_Visualizer.py"
+name = "Model Visualizer"
+icon = "📊"
+
+[[pages]]
+path = "pages/2_PnL_Visualizer.py"
+name = "PnL Visualizer"
+icon = "📈"
