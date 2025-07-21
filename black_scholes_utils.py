@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 import seaborn as sns
 from matplotlib.colors import TwoSlopeNorm
+import streamlit as st
 
 # =======================================
 
@@ -183,3 +184,66 @@ def pnl_grid(option_type, spot_range, vol_range, strike_price, time_to_maturity,
             else:
                 grid[i, j] = (put_price - premium) * contract_multiplier
     return grid
+
+# =======================================
+
+def plot_call_payoffs(strike_price, premium, spot_min, spot_max, selected_spot):
+
+    PnL_spot_range = np.linspace(spot_min, spot_max, 100)
+
+   
+    pnl_line = np.maximum(0, PnL_spot_range - strike_price) - premium
+    fig, ax = plt.subplots()
+    ax.plot(PnL_spot_range, pnl_line, label="Call PnL")
+
+    ax.fill_between(PnL_spot_range, pnl_line, 0, where=(pnl_line < 0), color="red", alpha=0.3, interpolate=True)
+    ax.fill_between(PnL_spot_range, pnl_line, 0, where=(pnl_line > 0), color="green", alpha=0.3, interpolate=True)
+
+    ax.grid(True, linestyle='--', alpha=0.5)
+
+    ax.axhline(0, color='black', linewidth=1, linestyle='--')
+    
+    ax.axvline(selected_spot, color="blue", linewidth=1, linestyle=":", label=f"Spot = {selected_spot:.2f}")
+    
+    breakeven = strike_price + premium
+    ax.axvline(breakeven, color="red", linewidth=1, linestyle="--", label=f"Breakeven = {breakeven:.2f}")
+    ax.set_xlabel("Spot Price")
+    ax.set_ylabel("PnL")
+    ax.set_title("Call Option Payoff")
+    
+    ax.legend()
+    fig.tight_layout()
+
+    return fig
+
+# =============================================
+
+def plot_put_payoffs(strike_price, premium, spot_min, spot_max, selected_spot):
+
+    PnL_spot_range = np.linspace(spot_min, spot_max, 100)
+
+   
+    pnl_line = np.maximum(0, strike_price - PnL_spot_range) - premium
+    fig, ax = plt.subplots()
+    ax.plot(PnL_spot_range, pnl_line, label="Put PnL")
+
+    ax.fill_between(PnL_spot_range, pnl_line, 0, where=(pnl_line < 0), color="red", alpha=0.3, interpolate=True)
+    ax.fill_between(PnL_spot_range, pnl_line, 0, where=(pnl_line > 0), color="green", alpha=0.3, interpolate=True)
+
+    ax.grid(True, linestyle='--', alpha=0.5)
+
+    ax.axhline(0, color='black', linewidth=1, linestyle='--')
+
+    ax.axvline(selected_spot, color="blue", linewidth=1, linestyle=":", label=f"Spot = {selected_spot:.2f}")
+    
+    breakeven = strike_price - premium
+    ax.axvline(breakeven, color="red", linewidth=1, linestyle="--", label=f"Breakeven = {breakeven:.2f}")
+    ax.set_xlabel("Spot Price")
+    ax.set_ylabel("PnL")
+    ax.set_title("Put Option Payoff")
+    
+    ax.legend()
+    fig.tight_layout()
+
+    return fig
+

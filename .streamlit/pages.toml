@@ -5,5 +5,5 @@ icon = "📊"
 
 [[pages]]
 path = "pages/2_PnL_Visualizer.py"
-name = "PnL Visualizer"
+name = "PnL Dashboard"
 icon = "📈"

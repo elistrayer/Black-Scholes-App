@@ -5,8 +5,6 @@ import streamlit as st
 
 
 
-
-
 # =======================================
 
 def styled_box(text, color):
@@ -23,7 +21,7 @@ def styled_box(text, color):
     </div>
     """, unsafe_allow_html=True)
 
-
+# =======================================
     
 # Create Sidebar
 shared_sidebar()
@@ -33,8 +31,6 @@ strike_price= st.session_state.strike_price
 time_to_maturity = st.session_state.time_to_maturity
 interest_rate = st.session_state.interest_rate
 volatility = st.session_state.volatility
-
-
 
 with st.sidebar:
     
