@@ -1,5 +1,6 @@
 import streamlit as st
 
+# Create the sidebar shared by both pages and save the values inputted to allow seamless transition between pages
 def shared_sidebar():
     st.sidebar.header("Option Parameters")
 

@@ -7,6 +7,7 @@ import streamlit as st
 
 # =======================================
 
+# Create markdown box to house the call and put option prices
 def styled_box(text, color):
     st.markdown(f"""
     <div style="
@@ -23,7 +24,7 @@ def styled_box(text, color):
 
 # =======================================
     
-# Create Sidebar
+# Create sidebar portion shared by both pages and load in saved values
 shared_sidebar()
 
 spot_price = st.session_state.spot_price
@@ -32,6 +33,8 @@ time_to_maturity = st.session_state.time_to_maturity
 interest_rate = st.session_state.interest_rate
 volatility = st.session_state.volatility
 
+
+# Add all other needed sidebar controls
 with st.sidebar:
     
     st.divider()
@@ -66,6 +69,17 @@ with st.sidebar:
     greek_size = st.slider("Metric Font Size", min_value=1, max_value=50, value=30)
 
 
+# Allow user to change the size of streamlit metrics
+st.markdown(
+f"""
+<style>
+[data-testid="stMetricValue"] > div {{
+    font-size: {greek_size}px;
+}}
+</style>
+""",
+unsafe_allow_html=True,
+) 
 
 
 # Generate needed computations and graphs to input
@@ -86,10 +100,7 @@ greeks = black_scholes.greeks()
 
 
 
-
-# Begin main section
-
-# Centered Title
+# Add centered Title
 st.markdown(
 """
 <h1 style='text-align: center; font-size: 44px; font-weight: bold; color: #fafafa;'>
@@ -101,8 +112,8 @@ unsafe_allow_html=True
 
 st.divider()
 
+# Create 5 columns to display the current option parameters
 st.subheader("Option Values:")
-
 topcol1, topcol2, topcol3, topcol4, topcol5 = st.columns(5, border=True)
 
 with topcol1:
@@ -120,20 +131,10 @@ with topcol5:
     st.metric("Volatility:", f"{volatility * 100:.2f}%")
 
 
-
+# Create main two center columns to display the heatmaps as well as greeks
 col1, col2 = st.columns(2)
 
-st.markdown(
-f"""
-<style>
-[data-testid="stMetricValue"] > div {{
-    font-size: {greek_size}px;
-}}
-</style>
-""",
-unsafe_allow_html=True,
-) 
-
+# Plot the call heatmap in column 1
 with col1: 
     styled_box(f"Call Value: ${real_call:.2f}", "#2ECC71")
     st.text("")
@@ -142,6 +143,7 @@ with col1:
 
     st.subheader("Call Greeks:")
     
+    # Create 5 more subcolumns within column 1 to display the greeks below the heatmap
     sub_col1, sub_col2, sub_col3, sub_col4, sub_col5 = st.columns(5)
 
     with sub_col1:
@@ -155,12 +157,12 @@ with col1:
     with sub_col5: 
         st.metric("Rho (1%):", f"{greeks['call_rho_1pct']:.3f}")
 
-
+    # Provide extra information about how the greeks are computed
     with st.popover("Greeks Info", icon=":material/info:"):
         st.markdown(f"Vega shown per +1% of σ.")
         st.markdown(f"Rho shown per +1% rate.")
 
-
+# Plot the put heatmap in column 2
 with col2: 
     styled_box(f"Put Value: ${real_put:.2f}", "#E74C3C")
     st.text("")
@@ -169,7 +171,7 @@ with col2:
 
     st.subheader("Put Greeks:")
 
-
+    # Same with column 1, create 5 subcolumns to display greeks
     sub_col1, sub_col2, sub_col3, sub_col4, sub_col5 = st.columns(5)
     with sub_col1:
         st.metric("Delta Δ:", f"{greeks['put_delta']:.3f}")
@@ -181,3 +183,4 @@ with col2:
         st.metric("Vega (1%):", f"{greeks['vega_1pct']:.3f}")
     with sub_col5: 
         st.metric("Rho (1%):", f"{greeks['put_rho_1pct']:.3f}")
+        

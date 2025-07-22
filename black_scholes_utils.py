@@ -7,7 +7,7 @@ import streamlit as st
 
 # =======================================
 
-# Black scholes equation to calculate prices
+# Black scholes equation to calculate prices and greeks
 class BlackScholes():
     def __init__(self, spot_price, strike_price, time_to_maturity, interest_rate, volatility):
         self.spot_price = spot_price
@@ -107,6 +107,7 @@ def create_grid(spot_range, vol_range, strike_price, time_to_maturity, interest_
 
 # =======================================
 
+# Draw lines on the PnL heatmap between positive and negative values
 def draw_sign_boundary(ax, grid, color="black", linewidth=1.5):
     nrows, ncols = grid.shape
     for i in range(nrows):
@@ -128,7 +129,7 @@ def draw_sign_boundary(ax, grid, color="black", linewidth=1.5):
 # =======================================
 
 
-# Use the previously created call and put price grid to plot a heatmap
+# Use the call and put price grids to plot a heatmap
 def create_heatmap(grid, spot_range, vol_range, title, grid_n):
     
     spot_range = [float(num) for num in spot_range]
@@ -171,7 +172,7 @@ def create_heatmap(grid, spot_range, vol_range, title, grid_n):
 
 # =======================================
 
-
+# Create the pnl grid to pass to heatmap function
 def pnl_grid(option_type, spot_range, vol_range, strike_price, time_to_maturity, interest_rate, premium, contract_multiplier=100):
     grid = np.empty((len(vol_range), len(spot_range)), dtype=float)
     for i, vol in enumerate(vol_range):
@@ -187,6 +188,7 @@ def pnl_grid(option_type, spot_range, vol_range, strike_price, time_to_maturity,
 
 # =======================================
 
+# Create the PnL chart for a call option
 def plot_call_payoffs(strike_price, premium, spot_min, spot_max, selected_spot):
 
     PnL_spot_range = np.linspace(spot_min, spot_max, 100)
@@ -218,6 +220,7 @@ def plot_call_payoffs(strike_price, premium, spot_min, spot_max, selected_spot):
 
 # =============================================
 
+# Create the pnl chart for put option
 def plot_put_payoffs(strike_price, premium, spot_min, spot_max, selected_spot):
 
     PnL_spot_range = np.linspace(spot_min, spot_max, 100)
@@ -247,3 +250,35 @@ def plot_put_payoffs(strike_price, premium, spot_min, spot_max, selected_spot):
 
     return fig
 
+# =======================================
+
+# Create the x and y axis values for time decay chart
+def time_loss(spot_price, strike_price, time_to_maturity, interest_rate, volatility, option_type):
+    time_steps = np.linspace(time_to_maturity, max(1/252, 1e-6), 50)
+
+    prices = []
+    for time in time_steps:
+        bs = BlackScholes(spot_price, strike_price, time, interest_rate, volatility)
+        call_price, put_price = bs.calculate_price()
+        if option_type == "Call":
+            prices.append(call_price)
+        else:
+            prices.append(put_price)
+
+    return time_steps, np.array(prices)
+
+# ===========================================
+
+# Plot the time decay chart
+def plot_time_loss(time_steps, prices, premium):
+    fig, ax = plt.subplots()
+    ax.plot(time_steps, prices, label="Option Price (Time Decay)")
+    ax.invert_xaxis()
+    ax.grid(True, linestyle='--', alpha=0.5)
+    ax.set_xlabel("Time to Expiry (Years)")
+    ax.set_ylabel("Option Price ($)")
+    ax.set_title("Time Decay Curve")
+    ax.axhline(premium, color="red", linestyle="--", linewidth=1.2, label=f"Premium = ${premium:.2f}")
+    ax.legend()
+
+    st.pyplot(fig)
