@@ -21,6 +21,7 @@ unsafe_allow_html=True
 
 st.divider()
 
+
 # Start sidebar setup with option type selection
 option_type = st.sidebar.segmented_control("Option Type", ["Call", "Put"], default="Call")
 if not option_type:
@@ -39,6 +40,9 @@ volatility = st.session_state.volatility
 
 # Add all other needed sidebar controls
 with st.sidebar:
+
+    st.divider()
+
     st.header("Purchase Price")
     premium = st.number_input("Premium Paid", min_value=0.0, value=10.0)
     contract_mult = st.number_input("Contract Multiplier", min_value=0.0, value=100.0)
@@ -64,7 +68,10 @@ with st.sidebar:
     st.divider()
 
     st.markdown("**Misc.**")
-    greek_size = st.slider("Metric Font Size", min_value=1, max_value=50, value=30)
+    greek_size = st.slider("Metric Font Size", min_value=10, max_value=50, value=30)
+
+    st.markdown(f'<a href="https://www.linkedin.com/in/eli-strayer-93101432a/" target="_blank" style="text-decoration: none; color: inherit;"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="25" height="25" style="vertical-align: middle; margin-right: 10px;">`Eli Strayer`</a>', unsafe_allow_html=True) 
+
 
 # Allow user to change the size of streamlit metrics
 st.markdown(
@@ -87,20 +94,11 @@ with col2:
     st.subheader("Key Metrics")
 
     # Change font size of slider title
-    st.markdown(
-        """
-        <style>
-        /* Target the slider label */
-        div[data-testid="stSlider"] label p {
-            font-size: 20px !important;
-            font-weight: 560 !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-        )
+
 
     # Create a slider that lets users select a spot price
+
+
     selected_spot = st.slider("Select Spot Price", spot_min, spot_max, (spot_min + spot_max) / 2)
     
     # Caclulate greeks, breakeven, and PnL using selected spot Pnl
@@ -175,8 +173,9 @@ with col1:
         
 
 st.text("")
-st.text("")
 
+
+st.divider()
 
 # Create two more columns identical to the two above (this allows the next two charts to always be level)
 sub_col1, sub_col2 = st.columns(2)

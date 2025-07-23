@@ -23,7 +23,7 @@ def styled_box(text, color):
     """, unsafe_allow_html=True)
 
 # =======================================
-    
+
 # Create sidebar portion shared by both pages and load in saved values
 shared_sidebar()
 
@@ -67,6 +67,9 @@ with st.sidebar:
 
     st.markdown("**Misc.**")
     greek_size = st.slider("Metric Font Size", min_value=1, max_value=50, value=30)
+
+    st.markdown(f'<a href="https://www.linkedin.com/in/eli-strayer-93101432a/" target="_blank" style="text-decoration: none; color: inherit;"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="25" height="25" style="vertical-align: middle; margin-right: 10px;">`Eli Strayer`</a>', unsafe_allow_html=True) 
+
 
 
 # Allow user to change the size of streamlit metrics
